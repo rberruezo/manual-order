@@ -1,0 +1,92 @@
+<!-- component123.html -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Component 2</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/JSXTransformer.js"></script>
+  </head>
+  <body>
+    <div id="component1"></div>
+    <div id="component2"></div>
+    <div id="component3"></div>
+    <script type="text/jsx">
+      var ByeMessage = React.createClass({
+			  render: function() {
+			    return <div>Bye {this.props.name}! Have a beautiful day.</div>;
+			  }
+			});
+
+			var Timer = React.createClass({
+			  getInitialState: function() {
+			    return {secondsElapsed: 0};
+			  },
+			  tick: function() {
+			    this.setState({secondsElapsed: this.state.secondsElapsed + 1});
+			  },
+			  componentDidMount: function() {
+			    this.interval = setInterval(this.tick, 1000);
+			  },
+			  componentWillUnmount: function() {
+			    clearInterval(this.interval);
+			  },
+			  render: function() {
+			    return (
+			      <div>Seconds Elapsed: {this.state.secondsElapsed}</div>
+			    );
+			  }
+			});
+
+			var TodoList = React.createClass({
+			  render: function() {
+			    var createItem = function(itemText, index) {
+			      return <li key={index + itemText}>{itemText}</li>;
+			    };
+			    return <ul>{this.props.items.map(createItem)}</ul>;
+			  }
+			});
+			var TodoApp = React.createClass({
+			  getInitialState: function() {
+			    return {items: [], text: ''};
+			  },
+			  onChange: function(e) {
+			    this.setState({text: e.target.value});
+			  },
+			  handleSubmit: function(e) {
+			    e.preventDefault();
+			    var nextItems = this.state.items.concat([this.state.text]);
+			    var nextText = '';
+			    this.setState({items: nextItems, text: nextText});
+			  },
+			  render: function() {
+			    return (
+			      <div>
+			        <h3>TODO</h3>
+			        <TodoList items={this.state.items} />
+			        <form onSubmit={this.handleSubmit}>
+			          <input onChange={this.onChange} value={this.state.text} />
+			          <button>{'Add #' + (this.state.items.length + 1)}</button>
+			        </form>
+			      </div>
+			    );
+			  }
+			});
+
+			React.render(
+				<ByeMessage name="Kenny" />,
+				document.getElementById('component1')
+			);
+			
+			React.render(
+				<Timer />,
+				document.getElementById('component2')
+			);
+
+			React.render(
+				<TodoApp />,
+				document.getElementById('component3')
+			);
+    </script>
+  </body>
+</html>

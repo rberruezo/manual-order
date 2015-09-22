@@ -1,0 +1,25 @@
+<!-- component1.html -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Component 1</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/JSXTransformer.js"></script>
+  </head>
+  <body>
+    <div id="content"></div>
+    <script type="text/jsx">
+      var ByeMessage = React.createClass({
+			  render: function() {
+			    return <div>Bye {this.props.name}! Have a beautiful day.</div>;
+			  }
+			});
+
+			React.render(
+				<ByeMessage name="Kenny" />,
+				document.getElementById('content')
+			);
+    </script>
+  </body>
+</html>
