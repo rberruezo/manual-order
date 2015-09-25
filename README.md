@@ -86,3 +86,14 @@ Update your HTML file as below:
 ```
 #### 5. Running a server
 To add functionality that requires POSTing to a running server we have written simple servers in a number of languages - JavaScript (using Node.js), Python, Haskell, Ruby, Go, and PHP. You can download a zip file with those [here](https://github.com/reactjs/react-tutorial/archive/master.zip).
+
+------------------------
+
+# ALT
+
+Alt is a library that facilitates the managing of state within your JavaScript applications. It is modeled after flux.
+
+#### Install Alt
+Source: http://alt.js.org/guide/
+
+Run `npm install alt` on the project root
