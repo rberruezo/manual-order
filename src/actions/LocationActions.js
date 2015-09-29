@@ -16,6 +16,10 @@ class LocationActions {
   favoriteLocation(location) {
     this.dispatch(location);
   }
+
+  unfavoriteLocation(location) {
+    this.dispatch(location);
+  }
 }
 
 module.exports = alt.createActions(LocationActions);

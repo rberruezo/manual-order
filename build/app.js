@@ -22169,6 +22169,10 @@ function LocationActions(){"use strict";}
     this.dispatch(location);
   };
 
+  LocationActions.prototype.unfavoriteLocation=function(location) {"use strict";
+    this.dispatch(location);
+  };
+
 
 module.exports = alt.createActions(LocationActions);
 
@@ -22186,9 +22190,24 @@ var React = require('react');
 var AltContainer = require('alt/AltContainer');
 var LocationStore = require('../stores/LocationStore');
 var FavoritesStore = require('../stores/FavoritesStore');
+var UnfavoritesStore = require('../stores/UnfavoritesStore');
 var LocationActions = require('../actions/LocationActions');
 
 var Favorites = React.createClass({displayName: "Favorites",
+  render:function() {
+    return (
+      React.createElement("ul", null, 
+        this.props.locations.map(function(location, i)  {
+          return (
+            React.createElement("li", {key: i}, location.name)
+          );
+        })
+      )
+    );
+  }
+});
+
+var Unfavorites = React.createClass({displayName: "Unfavorites",
   render:function() {
     return (
       React.createElement("ul", null, 
@@ -22208,6 +22227,13 @@ var AllLocations = React.createClass({displayName: "AllLocations",
       Number(ev.target.getAttribute('data-id'))
     );
     LocationActions.favoriteLocation(location);
+  },
+
+  addUnfave:function(ev) {
+    var location = LocationStore.getLocation(
+      Number(ev.target.getAttribute('data-id'))
+    );
+    LocationActions.unfavoriteLocation(location);
   },
 
   render:function() {
@@ -22234,9 +22260,15 @@ var AllLocations = React.createClass({displayName: "AllLocations",
             )
           );
 
+          var unfaveButton = (
+            React.createElement("button", {onClick: this.addUnfave, "data-id": location.id}, 
+              "Unfavorite"
+            )
+          );
+
           return (
             React.createElement("li", {key: i}, 
-              location.name, " ", location.has_favorite ? '<3' : faveButton
+              location.name, " ", location.has_favorite ? '<3' : faveButton, " ", location.has_unfavorite ? ':(' : unfaveButton
             )
           );
         }.bind(this))
@@ -22261,6 +22293,11 @@ var Locations = React.createClass({displayName: "Locations",
         React.createElement("h1", null, "Favorites"), 
         React.createElement(AltContainer, {store: FavoritesStore}, 
           React.createElement(Favorites, null)
+        ), 
+
+        React.createElement("h1", null, "Unfavorites"), 
+        React.createElement(AltContainer, {store: UnfavoritesStore}, 
+          React.createElement(Unfavorites, null)
         )
       )
     );
@@ -22269,7 +22306,7 @@ var Locations = React.createClass({displayName: "Locations",
 
 module.exports = Locations;
 
-},{"../actions/LocationActions":184,"../stores/FavoritesStore":188,"../stores/LocationStore":189,"alt/AltContainer":1,"react":182}],187:[function(require,module,exports){
+},{"../actions/LocationActions":184,"../stores/FavoritesStore":188,"../stores/LocationStore":189,"../stores/UnfavoritesStore":190,"alt/AltContainer":1,"react":182}],187:[function(require,module,exports){
 var LocationActions = require('../actions/LocationActions');
 
 var mockData = [
@@ -22347,6 +22384,7 @@ var alt = require('../alt');
 var LocationActions = require('../actions/LocationActions');
 var LocationSource = require('../sources/LocationSource');
 var FavoritesStore = require('./FavoritesStore');
+var UnfavoritesStore = require('./UnfavoritesStore');
 
 
   function LocationStore() {"use strict";
@@ -22357,7 +22395,8 @@ var FavoritesStore = require('./FavoritesStore');
       handleUpdateLocations: LocationActions.UPDATE_LOCATIONS,
       handleFetchLocations: LocationActions.FETCH_LOCATIONS,
       handleLocationsFailed: LocationActions.LOCATIONS_FAILED,
-      setFavorites: LocationActions.FAVORITE_LOCATION
+      setFavorites: LocationActions.FAVORITE_LOCATION,
+      setUnfavorites: LocationActions.UNFAVORITE_LOCATION
     });
 
     this.exportPublicMethods({
@@ -22390,12 +22429,22 @@ var FavoritesStore = require('./FavoritesStore');
     });
   };
 
+  LocationStore.prototype.resetAllUnfavorites=function() {"use strict";
+    this.locations = this.locations.map(function(location)  {
+      return {
+        id: location.id,
+        name: location.name,
+        has_unfavorite: false
+      };
+    });
+  };
+
   LocationStore.prototype.setFavorites=function(location) {"use strict";
     this.waitFor(FavoritesStore);
 
     var favoritedLocations = FavoritesStore.getState().locations;
 
-    this.resetAllFavorites();
+    // this.resetAllFavorites();
 
     favoritedLocations.forEach(function(location)  {
       // find each location in the array
@@ -22404,6 +22453,26 @@ var FavoritesStore = require('./FavoritesStore');
         // set has_favorite to true
         if (this.locations[i].id === location.id) {
           this.locations[i].has_favorite = true;
+          break;
+        }
+      }
+    }.bind(this));
+  };
+
+  LocationStore.prototype.setUnfavorites=function(location) {"use strict";
+    this.waitFor(UnfavoritesStore);
+
+    var unfavoritedLocations = UnfavoritesStore.getState().locations;
+
+    // this.resetAllUnfavorites();
+
+    unfavoritedLocations.forEach(function(location)  {
+      // find each location in the array
+      for (var i = 0; i < this.locations.length; i += 1) {
+
+        // set has_favorite to true
+        if (this.locations[i].id === location.id) {
+          this.locations[i].has_unfavorite = true;
           break;
         }
       }
@@ -22424,4 +22493,24 @@ var FavoritesStore = require('./FavoritesStore');
 
 module.exports = alt.createStore(LocationStore, 'LocationStore');
 
-},{"../actions/LocationActions":184,"../alt":185,"../sources/LocationSource":187,"./FavoritesStore":188}]},{},[183]);
+},{"../actions/LocationActions":184,"../alt":185,"../sources/LocationSource":187,"./FavoritesStore":188,"./UnfavoritesStore":190}],190:[function(require,module,exports){
+var alt = require('../alt');
+var LocationActions = require('../actions/LocationActions');
+
+
+  function UnfavoritesStore() {"use strict";
+    this.locations = [];
+
+    this.bindListeners({
+      addUnfavoriteLocation: LocationActions.UNFAVORITE_LOCATION
+    });
+  }
+
+  UnfavoritesStore.prototype.addUnfavoriteLocation=function(location) {"use strict";
+    this.locations.push(location);
+  };
+
+
+module.exports = alt.createStore(UnfavoritesStore, 'UnfavoritesStore');
+
+},{"../actions/LocationActions":184,"../alt":185}]},{},[183]);

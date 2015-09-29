@@ -2,9 +2,24 @@ var React = require('react');
 var AltContainer = require('alt/AltContainer');
 var LocationStore = require('../stores/LocationStore');
 var FavoritesStore = require('../stores/FavoritesStore');
+var UnfavoritesStore = require('../stores/UnfavoritesStore');
 var LocationActions = require('../actions/LocationActions');
 
 var Favorites = React.createClass({
+  render() {
+    return (
+      <ul>
+        {this.props.locations.map((location, i) => {
+          return (
+            <li key={i}>{location.name}</li>
+          );
+        })}
+      </ul>
+    );
+  }
+});
+
+var Unfavorites = React.createClass({
   render() {
     return (
       <ul>
@@ -24,6 +39,13 @@ var AllLocations = React.createClass({
       Number(ev.target.getAttribute('data-id'))
     );
     LocationActions.favoriteLocation(location);
+  },
+
+  addUnfave(ev) {
+    var location = LocationStore.getLocation(
+      Number(ev.target.getAttribute('data-id'))
+    );
+    LocationActions.unfavoriteLocation(location);
   },
 
   render() {
@@ -50,9 +72,15 @@ var AllLocations = React.createClass({
             </button>
           );
 
+          var unfaveButton = (
+            <button onClick={this.addUnfave} data-id={location.id}>
+              Unfavorite
+            </button>
+          );
+
           return (
             <li key={i}>
-              {location.name} {location.has_favorite ? '<3' : faveButton}
+              {location.name} {location.has_favorite ? '<3' : faveButton} {location.has_unfavorite ? ':(' : unfaveButton}
             </li>
           );
         })}
@@ -77,6 +105,11 @@ var Locations = React.createClass({
         <h1>Favorites</h1>
         <AltContainer store={FavoritesStore}>
           <Favorites />
+        </AltContainer>
+
+        <h1>Unfavorites</h1>
+        <AltContainer store={UnfavoritesStore}>
+          <Unfavorites />
         </AltContainer>
       </div>
     );
