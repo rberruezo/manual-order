@@ -22173,6 +22173,10 @@ function LocationActions(){"use strict";}
     this.dispatch(location);
   };
 
+  LocationActions.prototype.setRandomLocation=function(location) {"use strict";
+    this.dispatch(location);
+  };
+
 
 module.exports = alt.createActions(LocationActions);
 
@@ -22191,6 +22195,7 @@ var AltContainer = require('alt/AltContainer');
 var LocationStore = require('../stores/LocationStore');
 var FavoritesStore = require('../stores/FavoritesStore');
 var UnfavoritesStore = require('../stores/UnfavoritesStore');
+var RandomLocationStore = require('../stores/RandomLocationStore');
 var LocationActions = require('../actions/LocationActions');
 
 var Favorites = React.createClass({displayName: "Favorites",
@@ -22221,7 +22226,25 @@ var Unfavorites = React.createClass({displayName: "Unfavorites",
   }
 });
 
+var RandomLocation = React.createClass({displayName: "RandomLocation",
+  render:function() {
+    return (
+      React.createElement("h3", null, this.props.location ? this.props.location.name : '-')
+    );
+  }
+});
+
 var AllLocations = React.createClass({displayName: "AllLocations",
+
+  componentDidMount:function() {
+    setInterval(function() {
+      var location = LocationStore.getLocation(
+        Number(Math.floor(Math.random() * (LocationStore.getState().locations.length - 1)))
+      );
+      LocationActions.setRandomLocation(location);
+    }, 1000);
+  },
+
   addFave:function(ev) {
     var location = LocationStore.getLocation(
       Number(ev.target.getAttribute('data-id'))
@@ -22298,6 +22321,11 @@ var Locations = React.createClass({displayName: "Locations",
         React.createElement("h1", null, "Unfavorites"), 
         React.createElement(AltContainer, {store: UnfavoritesStore}, 
           React.createElement(Unfavorites, null)
+        ), 
+
+        React.createElement("h1", null, "Random location"), 
+        React.createElement(AltContainer, {store: RandomLocationStore}, 
+          React.createElement(RandomLocation, null)
         )
       )
     );
@@ -22306,7 +22334,7 @@ var Locations = React.createClass({displayName: "Locations",
 
 module.exports = Locations;
 
-},{"../actions/LocationActions":184,"../stores/FavoritesStore":188,"../stores/LocationStore":189,"../stores/UnfavoritesStore":190,"alt/AltContainer":1,"react":182}],187:[function(require,module,exports){
+},{"../actions/LocationActions":184,"../stores/FavoritesStore":188,"../stores/LocationStore":189,"../stores/RandomLocationStore":190,"../stores/UnfavoritesStore":191,"alt/AltContainer":1,"react":182}],187:[function(require,module,exports){
 var LocationActions = require('../actions/LocationActions');
 
 var mockData = [
@@ -22493,7 +22521,27 @@ var UnfavoritesStore = require('./UnfavoritesStore');
 
 module.exports = alt.createStore(LocationStore, 'LocationStore');
 
-},{"../actions/LocationActions":184,"../alt":185,"../sources/LocationSource":187,"./FavoritesStore":188,"./UnfavoritesStore":190}],190:[function(require,module,exports){
+},{"../actions/LocationActions":184,"../alt":185,"../sources/LocationSource":187,"./FavoritesStore":188,"./UnfavoritesStore":191}],190:[function(require,module,exports){
+var alt = require('../alt');
+var LocationActions = require('../actions/LocationActions');
+
+
+  function RandomLocationStore() {"use strict";
+    this.location = null;
+
+    this.bindListeners({
+      setRandomLocation: LocationActions.SET_RANDOM_LOCATION
+    });
+  }
+
+  RandomLocationStore.prototype.setRandomLocation=function(location) {"use strict";
+    this.location = location;
+  };
+
+
+module.exports = alt.createStore(RandomLocationStore, 'RandomLocation');
+
+},{"../actions/LocationActions":184,"../alt":185}],191:[function(require,module,exports){
 var alt = require('../alt');
 var LocationActions = require('../actions/LocationActions');
 

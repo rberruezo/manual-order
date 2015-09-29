@@ -20,6 +20,10 @@ class LocationActions {
   unfavoriteLocation(location) {
     this.dispatch(location);
   }
+
+  setRandomLocation(location) {
+    this.dispatch(location);
+  }
 }
 
 module.exports = alt.createActions(LocationActions);

@@ -3,6 +3,7 @@ var AltContainer = require('alt/AltContainer');
 var LocationStore = require('../stores/LocationStore');
 var FavoritesStore = require('../stores/FavoritesStore');
 var UnfavoritesStore = require('../stores/UnfavoritesStore');
+var RandomLocationStore = require('../stores/RandomLocationStore');
 var LocationActions = require('../actions/LocationActions');
 
 var Favorites = React.createClass({
@@ -33,7 +34,25 @@ var Unfavorites = React.createClass({
   }
 });
 
+var RandomLocation = React.createClass({
+  render() {
+    return (
+      <h3>{this.props.location ? this.props.location.name : '-'}</h3>
+    );
+  }
+});
+
 var AllLocations = React.createClass({
+
+  componentDidMount() {
+    setInterval(function() {
+      var location = LocationStore.getLocation(
+        Number(Math.floor(Math.random() * (LocationStore.getState().locations.length - 1)))
+      );
+      LocationActions.setRandomLocation(location);
+    }, 1000);
+  },
+
   addFave(ev) {
     var location = LocationStore.getLocation(
       Number(ev.target.getAttribute('data-id'))
@@ -110,6 +129,11 @@ var Locations = React.createClass({
         <h1>Unfavorites</h1>
         <AltContainer store={UnfavoritesStore}>
           <Unfavorites />
+        </AltContainer>
+
+        <h1>Random location</h1>
+        <AltContainer store={RandomLocationStore}>
+          <RandomLocation />
         </AltContainer>
       </div>
     );
