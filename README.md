@@ -19,3 +19,12 @@ python -m SimpleHTTPServer 8000
 ```
 #### See it
 Open a browser and go to `http://localhost:8000/index.html`
+
+# Source
+
+#### React
+https://facebook.github.io/react/docs/getting-started.html
+
+#### ALT
+http://alt.js.org/guide/
+
