@@ -1,4 +1,4 @@
-## Getting Started
+# Getting Started
 
 ```bash
 git clone git@github.com:rberruezo/manual-order.git
@@ -7,8 +7,15 @@ npm install
 npm start
 ```
 
-## Compile
+# Steps to run
 
+#### Compile
 ```bash
 npm start
 ```
+#### Start server
+```bash
+python -m SimpleHTTPServer 8000
+```
+#### See it
+Open a browser and go to `http://localhost:8000/index.html`
