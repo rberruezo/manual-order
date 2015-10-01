@@ -1,7 +1,7 @@
 {
-  "name": "alt-tutorial",
+  "name": "manual-order",
   "version": "1.0.0",
-  "description": "A simple flux tutorial built with alt and react",
+  "description": "A simple manual order built with alt, react and webpack",
   "main": "server.js",
   "dependencies": {
     "alt": "^0.16.0",
@@ -9,12 +9,21 @@
   },
   "devDependencies": {
     "browserify": "^8.0.3",
-    "reactify": "^0.17.1"
+    "reactify": "^0.17.1",
+    "webpack": "^1.2.0-beta6"
   },
   "scripts": {
     "build": "browserify -t [reactify --es6] src/App.jsx > build/app.js",
     "start": "npm run build && open 'index.html' "
   },
-  "author": "Josh Perez <josh@goatslacker.com>",
-  "license": "MIT"
+  "author": "Ramiro Berruezo <ramiro.berruezo@graion.com>",
+  "license": "Graion",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rberruezo/manual-order.git"
+  },
+  "bugs": {
+    "url": "https://github.com/rberruezo/manual-order/issues"
+  },
+  "homepage": "https://github.com/rberruezo/manual-order"
 }
