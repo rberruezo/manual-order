@@ -13,6 +13,15 @@ npm start
 ```bash
 npm start
 ```
+
+##### How it works
+
+npm looks in your package.json file, and if you have something like
+```json
+"scripts": { "start": "coffee server.coffee" }
+```
+then it will do that. If npm can't find your start script, it defaults to: `node server.js`
+
 #### Start server
 ```bash
 python -m SimpleHTTPServer 8000
